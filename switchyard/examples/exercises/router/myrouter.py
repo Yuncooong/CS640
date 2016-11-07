@@ -15,7 +15,10 @@ class Router(object):
     def __init__(self, net):
         self.net = net
         # other initialization stuff here
-
+	self.my_interfaces = self.net.interfaces()
+        self.my_ipaddr = [intf.ipaddr for intf in self.my_interfaces]
+	self.my_ipmac_pair = {}
+    def 
 
     def router_main(self):    
         '''
@@ -34,7 +37,40 @@ class Router(object):
                 break
 
             if gotpkt:
-                log_debug("Got a packet: {}".format(str(pkt)))
+		log_debug("Got a packet: {}".format(str(pkt)))
+		#to obtain the ARP header
+		arp = packet.get_header(Arp)
+		#get the ARP header
+		if arp:
+			#if is an Arp request
+			if arp.operation == ArpOperation.Request:
+				#add ip, mac pair into my map
+				my_ipmac_pair[arp.senderprotoaddr] = arp.senderhwaddr
+				#if IP address destination is in my router interface
+				if arp.targetprotoaddr in self.my_ipaddr:
+					#send ARP reply
+					senderhwaddr = self.net.interface_by_ipaddr(arp.targetprotoaddr).ethaddr
+					targethwaddr = arp.senderhwaddr
+					senderprotoaddr = arp.targetprotoaddr
+					targetprotoaddr = arp.senderprotoaddr
+					self.net.send_packet(dev, create_ip_arp_reply(senderhwaddr, targethwaddr,\ 
+										      senderprotoaddr, targetprotoaddr))
+			#if is not an ARP request,
+			else:
+
+
+
+
+		#task2
+		#to obtain the ip header
+		ip = packet.get_header(IPv4)
+		if ip:
+		
+	    #if not got packet
+	    else:
+                	    
+		
+	
 
 
 

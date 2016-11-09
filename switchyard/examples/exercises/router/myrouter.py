@@ -65,9 +65,29 @@ class Router(object):
 		#to obtain the ip header
 		ip = packet.get_header(IPv4)
 		if ip:
-		
-	    #if not got packet
-	    else:
+			#
+			max_prelen = 0
+			match = None
+			for f in self.forward_table:
+				netaddr = IPv4Network('172.16.0.0/255.255.255.0')
+				#find the longest prefix length
+				curr_prelen = netaddr.prefixlen
+				if ip.dst in netaddr:
+					if curr_prelen > max_prelen
+						max_prelen = curr_prelen
+						match = f
+						
+						
+		if match is None or ip.dst in self.my_ipaddr:
+			continue
+		else:
+			ip.ttl -= 1
+			dest_mac = None
+			if match[2]:
+				dest_mac = match[2]
+			else:
+				dest_mac = ip.dst
+			#send an ARP query 
                 	    
 		
 	

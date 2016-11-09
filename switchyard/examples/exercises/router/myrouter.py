@@ -82,6 +82,7 @@ class Router(object):
 			continue
 		else:
 			ip.ttl -= 1
+			#create ethernet mac address
 			dest_mac = None
 			if match[2]:
 				dest_mac = match[2]
